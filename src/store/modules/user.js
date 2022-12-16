@@ -1,12 +1,17 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { resetRouter } from '@/router'
+import { constantRoutes, resetRouter, asyncRoutes, anyRoutes  } from '@/router'
 
 const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
+    routes: [],
+    buttons: [],
+    roles: [],
+    resultAsyncRoutes: [],
+    resultAllRoutes: []
   }
 }
 
@@ -14,18 +19,41 @@ const state = getDefaultState()
 
 const mutations = {
   RESET_STATE: (state) => {
-    Object.assign(state, getDefaultState())
+    Object.assign(state, getDefaultState());
   },
   SET_TOKEN: (state, token) => {
-    state.token = token
+    state.token = token;
   },
   SET_NAME: (state, name) => {
-    state.name = name
+    state.name = name;
   },
   SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
+    state.avatar = avatar;
+  },
+  SET_USERINFO: (state, userInfo) => {
+    state.routes = userInfo.routes;
+    state.buttons = userInfo.buttons;
+    state.roles = userInfo.roles;
+  },
+  SET_RESULTASYNCROUTES: (state, asyncRoutes) => {
+    state.resultAsyncRoutes = asyncRoutes;
+    constantRoutes.concat(state.resultAsyncRoutes, anyRoutes);
+    state.resultAllRoutes = constantRoutes;
   }
 }
+
+const computedAsyncRoutes = (asyncRoutes, routes) => {
+  return asyncRoutes.filter(item => {
+    if (routes.indexOf(routes) != -1) {
+      if (item.children && item.children.length) {
+        item.children = computedAsyncRoutes(item.children, routes);
+      }
+      return true;
+    }
+  })
+}
+
+
 
 const actions = {
   // user login
@@ -55,8 +83,10 @@ const actions = {
 
         const { name, avatar } = data
 
+        commit('SET_USERINFO', data)
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
+        commit('SET_RESULTASYNCROUTES', computedAsyncRoutes(asyncRoutes, data.routes))
         resolve(data)
       }).catch(error => {
         reject(error)

@@ -20,7 +20,7 @@
             <template scope="{row, $index}">
                 <el-button type="success" icon="el-icon-sort-up" size="mini" v-if="row.isSale == 1" @click="onSale(row)"></el-button>
                 <el-button type="success" icon="el-icon-sort-down" size="mini" v-else @click="cancelSale(row)"></el-button>
-                <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
+                <el-button type="primary" icon="el-icon-edit" size="mini" @click='handleEdit'></el-button>
                 <el-button type="info" icon="el-icon-info" size="mini" @click="handleDrawer(row)"></el-button>
                 <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
             </template>
@@ -125,6 +125,9 @@ export default {
             this.sku = {};
             done();
         },
+        handleEdit() {
+            this.$message.info('该功能正在开发中 敬请期待！');
+        }
     },
 };
 </script>

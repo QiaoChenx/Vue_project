@@ -8,11 +8,10 @@ npm install --registry=https://registry.npm.taobao.org
 
 # 启动服务
 npm run dev
-```
 
 ## 文件介绍
 
-```bash
+```
 build
      ----index.js webpack配置文件【很少修改这个文件】
 mock
